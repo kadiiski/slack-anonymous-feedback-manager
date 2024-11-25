@@ -9,6 +9,8 @@ dotenv.config({ path: `.env.local`, override: true });
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const initDB = require("./utils/orm/initDB");
+
 // Middleware for parsing application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -77,7 +79,11 @@ app.use((req, res) => {
   res.status(404).send("Not Found");
 });
 
-// Start the Express server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Initialize the database before starting the app
+(async () => {
+  await initDB();
+  // Start the Express server
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+})();

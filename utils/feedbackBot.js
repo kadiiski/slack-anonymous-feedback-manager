@@ -1,6 +1,6 @@
 const { botResponse, getBotUserId, slackClient, respondToSlashCommand, botResponseBlocks, replyToThread, deleteBotHistoryWithUser, getSlackUserById } = require("./slack-utils");
 const { encrypt } = require("./encrypt-utils");
-const { getFeedbackById, getThreadStateByThreadTs, insertFeedback, insertThreadState, getFeedbackByRecipientId, getThreadStateByFeedbackId } = require("./sqlite-utils");
+const { getFeedbackById, getThreadStateByThreadTs, insertFeedback, insertThreadState, getFeedbackByRecipientId, getThreadStateByFeedbackId } = require("./orm-utils");
 
 // Handle Slash Commands
 async function handleSlashCommand(body) {
@@ -147,18 +147,12 @@ async function handleGetFeedbackCommand({ text, user_id, response_url }) {
       for (const record of feedbackForRecipient) {
         // Convert the string to a Date object
         const date = new Date(record.date);
-        // Extract the day, month, and year
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-        const year = date.getFullYear();
-        // Format the date as DD/MM/YYYY
-        const formattedDate = `${day}/${month}/${year}`;
 
         blocks.push({
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*${formattedDate}*\n _${record.feedback}_`
+            text: `*${date.toDateString()}*\n _${record.feedback}_`
           },
           accessory: {
             type: "button",
