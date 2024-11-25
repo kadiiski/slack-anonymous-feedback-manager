@@ -15,7 +15,7 @@ async function handleSlashCommand(body) {
     // Delete all messages from the bot
     await respondToSlashCommand(response_url, "Fine, I will delete all my messages. ;)");
     await deleteBotHistoryWithUser(user_id);
-  } else if (command === "/help") {
+  } else if (command === "/elmo-help") {
     await handleHelpCommand({ text, user_id, response_url });
   } else {
     await respondToSlashCommand(response_url, `Unrecognized command. Use \`/help\`, \`/give-feedback\` or \`/get-feedback\`.`);
