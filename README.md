@@ -1,70 +1,178 @@
-# Tempo Time Logg Reminder App
+# Feedback Bot
 
-This is an npm app that integrates with Jira and Tempo to help users log their time.
+Feedback Bot is a Slack application designed to help teams collect, manage, and discuss feedback anonymously and securely. It enables users to submit feedback, managers to retrieve and discuss it, and ensures all communication remains confidential.
 
-This app is designed to automate reminders for users to log their time in Jira. 
-It uses a cron job that runs every day at a specific time (9:00 AM) to send Slack messages to users who have not logged their time. 
+## Features
 
-The app also has an option to enable winners based on the number of days not logged and send a formatted message with the so-called "winners".
-The app reads a list of email addresses from the environment variable EMAIL_LIST and retrieves the not logged days for each user. 
-If there are any not logged days for a user, it sends a direct message to the user on Slack.
+- **Submit Feedback**: Users can share feedback about colleagues securely.
+- **Retrieve Feedback**: Managers can retrieve feedback for one or more team members with a secure password.
+- **Anonymous Discussions**: Managers and feedback authors can discuss specific feedback anonymously in private threads.
+- **Message Cleanup**: Bot messages and history can be cleared for confidentiality.
 
-If enabled, the app selects winners based on the minimum number of days (WINNERS_MIN_DAYS) set in the environment variable. 
-It then invites the winners to a Slack channel and sends a message with the winners to remind them.
+## Slash Commands
 
-The app also provides a basic HTTP server that listens for requests. 
-By accessing the /runcron endpoint, the cron job can be manually triggered. 
+### `/give-feedback`
+- **Description**: Submit feedback about a colleague confidentially.
+- **Usage**: `/give-feedback @recipient your feedback`
+- **Example**: `/give-feedback @john_doe Great work on the project!`
 
-The server also displays the current status of the cron job, including the last run time, on the default endpoint.
+### `/get-feedback`
+- **Description**: (Managers only) Retrieve feedback for one or more team members.
+- **Usage**: `/get-feedback <password> @recipient1, @recipient2...`
+- **Example**: `/get-feedback secret123 @john_doe, @jane_smith`
 
-To use this app, you need to configure your environment variables, including the Jira email list, Slack channel ID, and other necessary options.
-You need to create the Slack Bot yourself and give him permissions to read user data, write and invite people to chanels.
-Of course if some permissions are missing - it will throw error so you can fix them.
+### `/delete-history`
+- **Description**: Clear all bot messages in your chat for confidentiality.
+- **Usage**: `/delete-history`
+
+### `/help`
+- **Description**: View help information and usage instructions.
+- **Usage**: `/help`
 
 ## Installation
 
-To use this app, you need to have Node.js and npm installed on your machine.
+1. Clone this repository.
+   ```bash
+   git clone https://github.com/your-repo/feedback-bot.git
+   cd feedback-bot
+   ```
 
-1. Clone this repository
-2. Navigate to the project directory:
-3. Install the dependencies using yarn/npm
-4. Configure environment variables: 
-   - Create a `.env.local` or just use the `.env` file in the project root directory. 
-   - Set the following environment variables in the `.env.local` file: 
-     - `SLACK_CHANNEL_ID`: If enabled, winners with most days not logged will be displayed in the channel with SLACK_CHANNEL_ID 
-     - `ENABLE_WINNERS`: Slack channel ID (something like C05H9KYLPFX) 
-     - `WINNERS_MIN_DAYS`: Minimum days not logged to be part of the "winners" list. :D 
-     - `JIRA_EMAIL`: Same email as the account from which the API token was generated. 
-     - `JIRA_API_TOKEN`: JIRA API token (google how to generate it). 
-     - `JIRA_EMAIL`: Same email as the account from which the API token was generated. 
-     - `JIRA_BASE_URL`: No slash! 
-     - `TEMPO_API_TOKEN`: Generated from the Tempo app in the JIRA (settings -> tokens...)(google it) 
-     - `TEMPO_BASE_URL`: usually `https://api.tempo.io`
-     - `SLACK_BOT_TOKEN`: The main job token, should start with something like "xoxb-...." 
-     - `EMAIL_LIST`: Comma separated emails of people for which to check logs.
+2. Install dependencies.
+   ```bash
+   npm install
+   ```
 
-## birthdays.json
-Use this file to list birthdays of your team members. 
-They will be used in combination with OPENAI_API_KEY env. variable to generate nice weekly birthday messages.
-Those messages will be sent to the slack channel with the ID from the SLACK_CHANNEL_ID_BIRTHDAYS env. variable.
-NOTE: You can also add some other useful information that you want to be sent to the channel, like holidays.
-Use the env. variable BIRTHDAY_MSG_INSTRUCTIONS to add instructions about the format of the birthdays message.
-Format of the JSON:
+3. Set up the `.env` file with the following keys:
+   ```dotenv
+   SLACK_BOT_TOKEN=your-slack-bot-token
+   PORT=80
+   MANAGER_PASSWORD=your-manager-password
+   OPENAI_API_KEY=your-openai-api-key
+   ENCRYPTION_KEY=your-encryption-key
+   ```
+
+4. Start the application.
+   ```bash
+   npm start
+   ```
+
+## Database
+
+The bot uses SQLite to store feedback and thread states. Tables include:
+- **`feedback`**: Stores encrypted feedback with details about the author, recipient, and date.
+- **`threads`**: Tracks ongoing anonymous discussions between managers and feedback authors.
+
+## Security
+
+- **Encryption**: Feedback is encrypted using the `ENCRYPTION_KEY` from the `.env` file.
+- **Ephemeral Messages**: Bot responses are ephemeral and visible only to the user.
+- **Confidentiality**: Messages are deleted after processing to maintain confidentiality.
+
+## Development
+
+### Running Locally
+1. Set up a local Slack app and obtain a bot token.
+2. Configure your `.env` file with appropriate credentials.
+3. Run the application with:
+   ```bash
+   npm run dev
+   ```
+
+### API Keys
+The app integrates with OpenAI for feedback summarization. Ensure your `OPENAI_API_KEY` is valid and active.
+
+## Adding and Configuring the Slack App
+
+To deploy this Slack application, you need to configure it in Slack using a `manifest.json` file. Follow these steps to set up and host your own version:
+
+# Initial Setup for Slack Workspace
+### 1. Create a Slack App
+
+1. Go to the [Slack API App Management](https://api.slack.com/apps).
+2. Click on **"Create an App"** and choose **"From an app manifest"**.
+3. Select the workspace where you want to install the app and click **Next**.
+4. Paste the contents of the `slack-app-manifest.json` file into the editor.
+
+### 2. Update URLs in the Manifest
+
+Replace placeholders in the `slack-app-manifest.json` file with the URLs you will use to host your application:
+- **Slash Commands URLs**: Update `url` fields in the `features.slash_commands` section.
+- **Event Subscription URL**: Update the `request_url` in `settings.event_subscriptions`.
+- **Interactivity URL**: Update the `request_url` in `settings.interactivity`.
+
+Example:
 ```json
-[
-  {"name": "Some Name", "birthday": "3-1-1992", "email": "email@email.com"},
-  {"name": "Some Name", "birthday": "3-1-1992", "email": "email@email.com"}
-]
+"features": {
+  "slash_commands": [
+    {
+      "command": "/give-feedback",
+      "url": "https://your-domain.com/slack/commands",
+      "description": "Anonymous feedback.",
+      "usage_hint": "@username your feedback",
+      "should_escape": true
+    }
+  ]
+}
 ```
 
-## Usage 
-1. Start the app: `yarn start`
-2. The cron job will run at the specified intervals (every day at 15:00 PM). 
-3. The Slack bot will send reminders to all team members to log their time. 
+### 3. Install the App to Your Workspace
 
-## Contributing We welcome contributions to enhance this app. If you'd like to contribute, please follow these steps: 
-1. Fork this repository. 
-2. Create a new branch: `git checkout -b feature/your-feature-name`
-3. Make your changes and commit them: `git commit -m "Add your commit message"`
-4. Push your changes to your forked repository: `git push origin feature/your-feature-name`
-5. Open a pull request with a detailed description of your changes. ## License This app is licensed under the MIT License.
+1. Once the manifest is uploaded, click **Next** and review the settings.
+2. Click **Create** to finalize your app.
+3. Install the app to your workspace by clicking **Install App** in the settings sidebar.
+
+### 4. Generate the Bot Token (`xoxb-...`)
+
+1. In your Slack app dashboard, go to **OAuth & Permissions**.
+2. Click **Install to Workspace** and follow the prompts.
+3. Once installed, you’ll see the **Bot User OAuth Token**.
+4. Copy the token and add it to your `.env` file under `SLACK_BOT_TOKEN`:
+   ```env
+   SLACK_BOT_TOKEN=xoxb-your-bot-token
+   ```
+
+### 5. Set Up the Hosting Environment
+
+1. Deploy your app to your hosting platform (e.g., AWS, Heroku, or a custom server).
+2. Ensure your hosting environment supports HTTPS, as Slack requires secure endpoints.
+3. Update your app's environment variables (copy `.env` into `.env.local`) and edit the following:
+   ```env
+   PORT=80
+   MANAGER_PASSWORD=your-manager-password
+   OPENAI_API_KEY=your-openai-api-key
+   ENCRYPTION_KEY=your-encryption-key
+   ```
+
+### 6. Testing the App
+
+1. Use the `/give-feedback`, `/get-feedback`, and `/help` commands in your Slack workspace to test the app functionality.
+2. Confirm that:
+   - Feedback is submitted and stored securely.
+   - Feedback retrieval works for managers.
+   - Commands respond appropriately in Slack.
+
+### 7. Updating the Manifest
+
+If you make changes to your app's functionality or endpoints, no need to update the `slack-app-manifest.json`.
+
+### 8. Additional Resources
+
+- [Slack API Documentation](https://api.slack.com/)
+- [Manifest File Reference](https://api.slack.com/reference/manifests)
+
+By following these steps, you’ll have a fully functional Slack app ready for use in your workspace.
+
+## Contribution
+
+Contributions are welcome! Please follow these steps:
+1. Fork the repository.
+2. Create a feature branch.
+3. Submit a pull request with a detailed description of your changes.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+## Contact
+
+For issues or inquiries, please contact the repository owner or submit an issue via GitHub.
