@@ -21,7 +21,7 @@ app.post("/slack/commands", async (req, res) => {
     const slackCommand = req.body;
 
     // Process the command asynchronously
-    await handleSlashCommand(slackCommand);
+    handleSlashCommand(slackCommand).then();
 
     // Acknowledge the command
     res.status(200).send("");
@@ -38,7 +38,7 @@ app.post("/slack/actions", async (req, res) => {
     const action = payload.actions[0]; // Assuming one action per payload
 
     if (action.action_id.startsWith("discuss_feedback_")) {
-      await handleFeedbackDiscussion(payload, action);
+      handleFeedbackDiscussion(payload, action).then()
     }
 
     // Acknowledge the action
@@ -61,7 +61,7 @@ app.post("/slack/events", async (req, res) => {
     }
 
     if (payload.type === "event_callback") {
-      await handleSlackEvent(payload.event);
+      handleSlackEvent(payload.event).then();
     }
 
     // Acknowledge the event
