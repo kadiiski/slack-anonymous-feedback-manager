@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize");
-const pg = require("node:pg");
+const pg = require("pg");
 
 // Use environment variables to configure the database
 const DB_TYPE = process.env.DB_TYPE || "sqlite"; // 'sqlite' or 'postgres'
