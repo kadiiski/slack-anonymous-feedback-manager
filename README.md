@@ -1,13 +1,13 @@
-# Feedback Bot
+# Elmo - The Feedback Bot
 
-Feedback Bot is a Slack application designed to help teams collect, manage, and discuss feedback anonymously and securely. It enables users to submit feedback, managers to retrieve and discuss it, and ensures all communication remains confidential.
+Elmo is a Slack application designed to help teams collect, manage, and discuss feedback anonymously and securely. It enables users to submit feedback, managers to retrieve and discuss it, and ensures all communication remains confidential.
 
 ## Features
 
-- **Submit Feedback**: Users can share feedback about colleagues securely.
+- **Submit Feedback**: Users can share feedback with Elmo about colleagues securely.
 - **Retrieve Feedback**: Managers can retrieve feedback for one or more team members with a secure password.
 - **Anonymous Discussions**: Managers and feedback authors can discuss specific feedback anonymously in private threads.
-- **Message Cleanup**: Bot messages and history can be cleared for confidentiality.
+- **Message Cleanup**: Bot messages and history can be cleared for confidentiality. (Coming soon) - need to properly handle this in the code and threads table in db.
 
 ## Slash Commands
 
@@ -21,7 +21,7 @@ Feedback Bot is a Slack application designed to help teams collect, manage, and 
 - **Usage**: `/get-feedback <password> @recipient1, @recipient2...`
 - **Example**: `/get-feedback secret123 @john_doe, @jane_smith`
 
-### `/delete-history`
+### `/delete-history` (Coming soon)
 - **Description**: Clear all bot messages in your chat for confidentiality.
 - **Usage**: `/delete-history`
 

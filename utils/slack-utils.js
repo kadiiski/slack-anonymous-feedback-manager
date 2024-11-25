@@ -129,5 +129,20 @@ async function deleteBotHistoryWithUser(user_id) {
   }
 }
 
+const getSlackUserById = async (userId) => {
+  try {
+    const response = await slackClient.users.info({ user: userId });
+    if (response.ok) {
+      return response.user; // The user object containing details like name, email, etc.
+    } else {
+      console.error('ERROR: Unable to fetch user info from Slack', response.error);
+      return null;
+    }
+  } catch (error) {
+    console.error('ERROR: getSlackUserById', error);
+    return null;
+  }
+};
 
-module.exports = {botResponse, getBotUserId, slackClient, respondToSlashCommand, respondToSlashCommandBlocks, botResponseBlocks, replyToThread, deleteBotHistoryWithUser}
+
+module.exports = {botResponse, getBotUserId, slackClient, respondToSlashCommand, respondToSlashCommandBlocks, botResponseBlocks, replyToThread, deleteBotHistoryWithUser, getSlackUserById}
