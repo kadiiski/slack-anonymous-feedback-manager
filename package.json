@@ -1,0 +1,21 @@
+{
+  "name": "slack-anonymous-feedback-manager",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/web-api": "^6.8.1",
+    "axios": "^1.7.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
+    "sqlite3": "^5.1.7",
+    "util": "^0.12.5"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.6.1"
+  }
+}
