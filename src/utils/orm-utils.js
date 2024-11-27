@@ -1,5 +1,5 @@
 const {decrypt} = require('./encrypt-utils');
-const { Feedback, Thread } = require("./orm/models");
+const { Feedback, Thread } = require("../orm/models");
 const {Op} = require("sequelize");
 
 const insertFeedback = async (authorSlackId, recipientSlackId, encryptedFeedback) => {

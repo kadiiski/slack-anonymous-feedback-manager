@@ -8,7 +8,7 @@ dotenv.config({ path: `.env.local`, override: true });
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 const slackClient = new WebClient(SLACK_BOT_TOKEN);
 
-const botResponse = async (message, channel) => {
+const sendMessage = async (message, channel) => {
   return await slackClient.chat.postMessage({
     channel: channel,
     blocks: [{type: "section", text: {type: "mrkdwn", text: message}}],
@@ -16,7 +16,30 @@ const botResponse = async (message, channel) => {
   })
 }
 
-const botResponseBlocks = async (blocks, text, channel) => {
+async function sendMessageEphemeral(channelId, userId, message) {
+  try {
+    const result = await slackClient.chat.postEphemeral({
+      channel: channelId,
+      user: userId, // The user who should see the ephemeral message
+      text: message, // Fallback text for clients that don't support blocks
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: message,
+          },
+        },
+      ],
+    });
+
+    console.log('Ephemeral message sent:', result);
+  } catch (error) {
+    console.error('Error sending ephemeral message:', error);
+  }
+}
+
+const sendMessageBlocks = async (blocks, text, channel) => {
   return await slackClient.chat.postMessage({
     channel: channel,
     blocks: blocks,
@@ -144,5 +167,15 @@ const getSlackUserById = async (userId) => {
   }
 };
 
-
-module.exports = {botResponse, getBotUserId, slackClient, respondToSlashCommand, respondToSlashCommandBlocks, botResponseBlocks, replyToThread, deleteBotHistoryWithUser, getSlackUserById}
+module.exports = {
+  sendMessage,
+  getBotUserId,
+  slackClient,
+  respondToSlashCommand,
+  respondToSlashCommandBlocks,
+  sendMessageBlocks,
+  replyToThread,
+  deleteBotHistoryWithUser,
+  getSlackUserById,
+  sendMessageEphemeral
+};

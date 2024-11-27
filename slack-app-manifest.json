@@ -3,7 +3,7 @@
     "name": "Elmo",
     "description": "Share with Elmo.",
     "background_color": "#000000",
-    "long_description": "Hello, I'm Elmo,\r\n\r\nI know my way around Feedback to help users provide their feedback anonymously, but still give managers enough freedom to further elaborate. \r\n\r\nHere’s what I can do:\r\n:one: *Submit Feedback*:\r\n   - Share feedback about someone confidentially. (_add as many details as possible_)\r\n   - *Format*: `/give-feedback @recipient your feedback`\r\n   - *Example*: `/give-feedback @john_doe Great job on the project etc. etc.!`\r\n💡 _Note: you can do this anywhere, in any chat, any time, it will only be seen by you as it's ephemeral messaging. If you have any doubts - do it in your own DMs or with me._\r\n  \r\n:two: *Retrieve Feedback (Managers Only)*:\r\n   - View feedback submitted for one or more people.\r\n   - *Format*: `/get-feedback <password> @recipient1, @recipient2...`\r\n   - *Example*: `/get-feedback secret123 @john_doe, @jane_smith`\r\n💡 _Note: you can do this anywhere, in any chat, any time, it will only be seen by you as it's ephemeral messaging. If you have any doubts - do it in your own DMs or with me._\r\n\r\n:three: *Help*:\r\n   - Get this Elmo help message anytime.\r\n   - *Command*: `/help`\r\n  \r\n💡 _Note: All messages sent to me are confidential and will be deleted after processing. No names and emails are being saved and feedback is encrypted_\r\n\r\n:elmo: _Managers can also initiate a confidential & anonymous discussion about specific feedback item, Elmo will act as a middle man to convey the messages and keep both parties anonymous. When this happens a private thread will be initiated in both people DM chats with Elmo, where they can communicate in the thread._"
+    "long_description": "Hello, I'm Elmo,\r\n\r\nI know my way around Feedback to help users provide their feedback anonymously, but still give managers enough freedom to further elaborate. \r\n\r\nHere’s what I can do:\r\n*Submit Feedback*:\r\n   - Share feedback about someone confidentially. (_add as many details as possible_)\r\n   - *Format*: `/give-feedback @recipient your feedback`\r\n   - *Example*: `/give-feedback @john_doe Great job on the project etc. etc.!`\r\n💡 _Note: you can do this anywhere, in any chat, any time, it will only be seen by you as it's ephemeral messaging. If you have any doubts - do it in your own DMs or with me._\r\n  \r\n*Retrieve Feedback (Managers Only)*:\r\n   - View feedback submitted for one or more people.\r\n   - *Format*: `/get-feedback <password> @recipient1, @recipient2...`\r\n   - *Example*: `/get-feedback secret123 @john_doe, @jane_smith`\r\n💡 _Note: you can do this anywhere, in any chat, any time, it will only be seen by you as it's ephemeral messaging. If you have any doubts - do it in your own DMs or with me._\r\n\r\n*Help*:\r\n   - Get this Elmo help message anytime.\r\n   - *Command*: `/help`\r\n  \r\n💡 _Note: All messages sent to me are confidential and will be deleted after processing. No names and emails are being saved and feedback is encrypted_\r\n\r\n:elmo: _*Managers* can also initiate a confidential & anonymous discussion about specific feedback item, Elmo will act as a middle man to convey the messages and keep both parties anonymous. When this happens a private thread will be initiated in both people DM chats with Elmo, where they can communicate in the thread._"
   },
   "features": {
     "bot_user": {
@@ -66,12 +66,13 @@
     "event_subscriptions": {
       "request_url": "https://[YOUR-DOMAIN]/slack/events",
       "bot_events": [
+        "app_home_opened",
         "message.im"
       ]
     },
     "interactivity": {
       "is_enabled": true,
-      "request_url": "https://[YOUR-DOMAIN]/slack/actions"
+      "request_url": "https://[YOUR-DOMAIN]/slack/interactivity"
     },
     "org_deploy_enabled": false,
     "socket_mode_enabled": false,
