@@ -14,6 +14,8 @@ Elmo is a Slack application designed to help teams collect, manage, and discuss 
 ### `/give-feedback`
 - **Description**: Submit feedback about a colleague confidentially.
 - **Usage**: `/give-feedback @recipient your feedback`
+- **Usage**: `/give-feedback @recipient`
+- **Usage**: `/give-feedback`
 - **Example**: `/give-feedback @john_doe Great work on the project!`
 
 ### `/get-feedback`
@@ -58,9 +60,15 @@ Elmo is a Slack application designed to help teams collect, manage, and discuss 
 
 ## Database
 
-The bot uses SQLite to store feedback and thread states. Tables include:
+The bot uses SQLite or PostgresSQL to store feedback and thread states. Tables include:
 - **`feedback`**: Stores encrypted feedback with details about the author, recipient, and date.
 - **`threads`**: Tracks ongoing anonymous discussions between managers and feedback authors.
+
+```dotenv
+DB_TYPE="sqlite" // or 'postgres' (add proper DATABASE_URL if you choose 'postgres')
+DATABASE_URL="./database.db" // 'sqlite' (default) local db file (./database.db), external URL also works.
+#DATABASE_URL="postgres://<user>:<pass>@<domain>/<db>"
+```
 
 ## Security
 
@@ -74,9 +82,11 @@ The bot uses SQLite to store feedback and thread states. Tables include:
 1. Set up a local Slack app and obtain a bot token.
 2. Configure your `.env` file with appropriate credentials.
 3. Run the application with:
-   ```bash
-   npm run dev
-   ```
+```bash
+yarn start
+# or
+node index.js
+```
 
 ### API Keys
 The app integrates with OpenAI for feedback summarization. Ensure your `OPENAI_API_KEY` is valid and active.
@@ -96,13 +106,12 @@ To deploy this Slack application, you need to configure it in Slack using a `man
 ### 2. Update URLs in the Manifest
 
 Replace placeholders in the `slack-app-manifest.json` file with the URLs you will use to host your application:
-- **Slash Commands URLs**: Update `url` fields in the `features.slash_commands` section.
-- **Event Subscription URL**: Update the `request_url` in `settings.event_subscriptions`.
-- **Interactivity URL**: Update the `request_url` in `settings.interactivity`.
+- **Slash Commands, Event Subscription & Interactivity require URLs**: Update `url` in all `[YOUR-DOMAIN]` occurrences.
+- Put the proper domain pointing to where your app is hosted.
 
 Example:
 ```json
-"features": {
+{
   "slash_commands": [
     {
       "command": "/give-feedback",
