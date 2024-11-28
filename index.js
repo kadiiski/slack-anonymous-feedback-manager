@@ -64,11 +64,11 @@ app.post("/slack/events", async (req, res) => {
   try {
     const payload = req.body;
     const event = payload.event;
-    let response = "";
 
     if (payload.type === "url_verification") {
       // Respond to Slack's verification challenge
-      response = payload.challenge;
+      res.status(200).send(payload.challenge);
+      return;
     }
 
     // Display the app home tab when the app is opened.
@@ -79,7 +79,9 @@ app.post("/slack/events", async (req, res) => {
     // Handle view submission events for the feedback modal.
     if (event?.type === 'view_submission' && event?.view?.callback_id === 'give_feedback_modal') {
       // Must return response.
-      response = await handleFeedbackSubmission(event);
+      const response = await handleFeedbackSubmission(event);
+      res.status(200).send(response);
+      return;
     }
 
     // If it's a message event and not from a bot, handle the discussion.
@@ -88,7 +90,7 @@ app.post("/slack/events", async (req, res) => {
     }
 
     // Acknowledge the event.
-    res.status(200).send(response);
+    res.status(200).send("");
   } catch (error) {
     console.error("Error handling Slack event:", error);
     res.status(500).send("Internal Server Error");
